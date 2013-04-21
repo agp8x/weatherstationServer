@@ -1,0 +1,76 @@
+MySQL wrapper OOP
+#v5.2
+
+DBLib:
+	#DBLib()
+		creates new Instance
+	#DBLib($host,$user,$pass,$database)
+		creates new Instance with connection, no need for calling connect()
+	-connect($host,$user,$pass,$database)
+		returns true/false
+	-close()
+		void
+	-update($target, $values, $identifier=array(), $increment=false)
+ 		returns boolean success
+	-insert($target, $values)
+		returns boolean success
+	-delete($target,$identifier,$extra="")
+		returns boolean success
+	-select($target, $values, $identifier=array(), $extra="",$escapeIdentifier=true)
+		returns array('row0[]','row1[]'...) or false
+	-selectRange($target, $values, $range, $extra="",$escapeIdentifier=true)
+		returns array('row0[]','row1[]'...) or false
+	-tableName($table)
+		returns tablename with prefix
+	-dbEscape($string)
+		returns escaped string (if connected, otherwise unaltered string is returned
+	::version
+		returns version (double)
+	-toggleDevmode()
+		toggles Devmode on/off [Default:off]
+	-isDevmode()
+		returns boolean state of devmode
+	-setPrefix($prefix)
+		sets table-prefix
+	-getPrefix()
+		returns table-prefix
+	-setNoExecute($set=false)
+		if $set is true, no queries will be sent, until called again with false
+		!!Will echo html-escaped statements ('noExecute') instead of query, methods will return false!!
+		connect will return true
+		to allow functions to work, connection-state will be set true, though no connection is created
+		establishing a connection, enabling noEx, then calling close() wont close the connection
+	-isConnected()
+		returns boolean state of connection
+	#toString:
+		If connected, user, host and database, plus version, execute- and devmode-states are returned,
+		otherwise only version
+
+	.checkExecute($message)
+		checks if execution is enabled, if not $message with NoEx-tag ist echoed and false returned
+	.echoDev($message)
+		if devmode enabled, $message ist echoed in HTML-comment-tag
+	.convertIdentifier($identifier,$escapeIdentifier=true){
+		converts $identifier-string or -array to SQL-WHERE-statement
+	.convertTable($tables)
+		converts $tables-string or -array to SQL-table selection
+
+Connecting using the parameters at the constructor will not return success, so calling ->isConnected() later is recommended, altough calling functions while not connected will return falses
+
+###ARGUMENTS###
+$table		(string)		tablename without prefix
+$values		(string)		values(columnNames/fields) to be selected or incremented
+$values		(array('field'=>'value'))		values to be inserted
+$identifier	(array('field'=>'value'))		search criteria
+$extra		(string)		is put behind "WHERE", escaped
+$escapeIdenitfier	(bool)		true : `column`='value' ## false : column=other_column
+$range		(array)		[0]: field; [1]: from; [2]: to
+$increment	(bool/int)		if !=false, '$values'='$values'+$increment
+
+
+
+LEGEND:
+ -	-> function()
+ #	->Constructor or (in case of toString) "echo $INSTANCE_OF_CLASS"
+ .	->private function
+
