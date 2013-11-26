@@ -2,6 +2,7 @@
 #v1.5
 header("Cache-Control: no-cache, must-revalidate");
 $start=microtime(true);
+date_default_timezone_set("Europe/Berlin");
 include('lib/DBLib.php');
 include('draw.php');
 include('function.php');
