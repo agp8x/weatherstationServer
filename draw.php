@@ -254,6 +254,7 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 			}
 			foreach($datas as $key=>$dataset){
 				$values=prepareData($dataset,$div,$selectionStart,$selectionEnd,$chartdistance);
+				//TODO: replace $type.($key+1) with actual name
 				$myData->addPoints($values,$type.($key+1));
 				#file_put_contents('val1',var_export($values,true));
 			}
