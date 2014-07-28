@@ -51,7 +51,7 @@ if(isset($_GET['mode']) && $_GET['mode']=='last'){
 	//mode: day
 	$mode=1;
 }else{
-	$html.="No/invalid type, default to temperature/today";
+	$html.="Keine weiteren Angaben: Heutige Temperatur wird angezeigt";
 	$mode=1;
 	$type="temp";
 }

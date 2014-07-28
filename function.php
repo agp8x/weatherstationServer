@@ -57,6 +57,7 @@ function logStats($datas,$type,$alt=false,$outlineAlt=0,$mode=1){
 	$left=80;
 	$max=getMax($type);
 	for($num=0;$num<=$max;$num++){
+		$printValues=true;
 		if($num>0){
 			$left+=300;
 		}
@@ -64,23 +65,32 @@ function logStats($datas,$type,$alt=false,$outlineAlt=0,$mode=1){
 		$unit=getUnit($type);
 		$stat=$timePoints=array();
 		if($alt===false){
-			$stat=dataStat($datas[$num],$type);
-			$timePoints=outLinedLogPoints($datas[$num]);
+			if(is_array($data[$num])){
+				$stat=dataStat($datas[$num],$type);
+				$timePoints=outLinedLogPoints($datas[$num]);
+			}else{
+				$printValues=false;
+			}
 		}else{
 			$stat=$alt[$num];
 			$timePoints=$outlineAlt[$num];
+			$printValues = $stat['min'][1]!=0;
 		}
 		$output.="<div style='position:absolute;left:".$left."px;'>\n";
 		$output.=$type.($num+1)."<br>\n";
-		$output.="minimum: ".$stat['min'][0]." @ ".ttdls((int) $stat['min'][1],$mode)."<br>\n";
-		$output.="maximum: ".$stat['max'][0]." @ ".ttdls((int) $stat['max'][1],$mode)."<br>\n";
-		$output.="average: ".$stat['avg']." @ ".ttdls2($stat['min'][1],$mode)."<br>\n";
-		$output.="Logpoints: ".$stat['size']."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".ttdls3((int) $stat['min'][1],$mode);
-		$output.="<br><br><br>";
-		if($mode==1){
-			foreach($timePoints as $point){
-				$output.=date("H:i:s",(int) $point[1])." - ".$point[0]/$div.$unit."<br>\n";
+		if($printValues){
+			$output.="minimum: ".$stat['min'][0]." @ ".ttdls((int) $stat['min'][1],$mode)."<br>\n";
+			$output.="maximum: ".$stat['max'][0]." @ ".ttdls((int) $stat['max'][1],$mode)."<br>\n";
+			$output.="average: ".$stat['avg']." @ ".ttdls2($stat['min'][1],$mode)."<br>\n";
+			$output.="Logpoints: ".$stat['size']."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".ttdls3((int) $stat['min'][1],$mode);
+			$output.="<br><br><br>";
+			if($mode==1){
+				foreach($timePoints as $point){
+					$output.=date("H:i:s",(int) $point[1])." - ".$point[0]/$div.$unit."<br>\n";
+				}
 			}
+		}else{
+			$output.="Keine Daten</div>";
 		}
 		$output.="</div>\n";
 	}
