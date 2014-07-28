@@ -65,7 +65,7 @@ function logStats($datas,$type,$alt=false,$outlineAlt=0,$mode=1){
 		$unit=getUnit($type);
 		$stat=$timePoints=array();
 		if($alt===false){
-			if(is_array($data[$num])){
+			if(is_array($datas[$num])){
 				$stat=dataStat($datas[$num],$type);
 				$timePoints=outLinedLogPoints($datas[$num]);
 			}else{
