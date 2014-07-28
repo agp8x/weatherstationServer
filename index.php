@@ -62,7 +62,19 @@ if($mode==1){
 			$date=array($_GET['year'],$_GET['month'],1);
 		}else{
 			$date=array($_GET['year'],$_GET['month'],$_GET['day']);
-			if(($_GET['day']>$today[0])&&($_GET['month']>=$today[1])&&($_GET['year']>=$today[2])){
+			$future=false;
+			if($_GET['year']>$today[2]){
+				$future=true;
+			}else{
+				if($_GET['month']>$today[1]){
+					$future=true;
+				}else{
+					if($_GET['day']>$today[0]){
+						$future=true;
+					}
+				}
+			}
+			if($future){
 				$error="future";
 				$mode=0;
 			}
