@@ -57,6 +57,7 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 			$datas[]=$db->selectRange($type.$i,'*',$rangeSelector);
 			if($datas[$i-1]===false){
 				$html.='No values ('.$type.$i.')';
+				/* TODO: think about*/
 				if($type!="ambi"){
 					return;			
 				}
