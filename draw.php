@@ -131,13 +131,12 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 		
 		$summary=$db->select('summary','*',$date_array,'ORDER BY id DESC');
 		$recentSummary=true;
-		# uncomment to activate rebuild
-		#foreach($types as $tmp){
-		#	if($tmp=$types[1]){
-		#		continue;
-		#	}
-		#	$recentSummary=($summary[0][$tmp.'-min-time'] > 0) && $recentSummary;
-		#}
+		foreach($types as $tmp){
+			if($tmp=$types[1]){
+				continue;
+			}
+			$recentSummary=($summary[0][$tmp.'-min-time'] > 0) && $recentSummary;
+		}
 		if($summary===false ||isset($_GET['totalforce']) || ! $recentSummary){
 		//stats are not in db, generate new, also redraw graph
 			$forceRedraw=true;
