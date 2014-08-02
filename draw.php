@@ -132,7 +132,7 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 		$summary=$db->select('summary','*',$date_array,'ORDER BY id DESC');
 		$recentSummary=true;
 		foreach($types as $tmp){
-			if($tmp=$types[1]){
+			if($tmp==$types[1]){
 				continue;
 			}
 			$recentSummary=($summary[0][$tmp.'-min-time'] > 0) && $recentSummary;
