@@ -75,7 +75,7 @@ if($mode==1){
 				}
 			}
 			if($future){
-				$error="future";
+				$error="Gewähltes Datum liegt in der Zukunft.";
 				$mode=0;
 			}
 		}
