@@ -11,6 +11,7 @@
 #08.08.12 OOP, proper Link handling			#v4
 #25.08.12 construct;toString;set/getPrefix;noExecute added, LinkHandling fixed	#v5
 #04.09.12 various improvments				#v5.2
+#04.02.14 port to mysqli 					#v6.1
 
 class DBLib{
 
@@ -18,14 +19,19 @@ class DBLib{
 	private $devmode=false;
 	private $dbprefix="";
 	private $connected=false;
-	const   version=5.2;
+	const   version=6.1;
 	private $dbinfo=null;
 	private $execute=true;
 	
 	public function __construct($host="",$user="",$pass="",$database=""){
 		if(($host!="" || $user!="" || $pass!="" || $database!="")){
 			$this->connect($host,$user,$pass,$database);
+		}else{
+			$this->dbLink=new mysqli();
 		}
+	}
+	public function __destruct(){
+		$this->close();
 	}
 	
 	public function connect($host,$user,$pass,$database){
@@ -34,8 +40,8 @@ class DBLib{
 			$this->dbinfo=array('user'=>'noExecute','host'=>'noExecute','dbbase'=>'noExecute');
 			return true;
 		}
-		$this->dbLink=@mysql_connect($host, $user, $pass);
-		if ($this->dbLink===false || !@mysql_select_db($database)) {
+		$this->dbLink=new mysqli($host, $user, $pass, $database);
+		if ($this->dbLink->connect_errno != 0) {
 			$this->echoDev('Connection failed!');
 			$this->connected=false;
 		}else{
@@ -46,11 +52,13 @@ class DBLib{
 	}
 
 	public function close(){
-		$this->connected=false;
+		if ($this->dbLink instanceof mysqli) {
+			$this->connected=$this->dbLink->close();
+			$this->dbLink=null;
+		}
 		if(!$this->checkExecute('close')){
 			return false;
 		}
-		mysql_close($this->dbLink);
 	}
 
 	public function update($table, $values, $identifier=array(), $increment=false,$escapeIdentifier=true) {
@@ -75,12 +83,7 @@ class DBLib{
 		if(!$this->checkExecute($sql)){
 			return false;
 		}
-		$result=mysql_query($sql,$this->dbLink);
-		if(mysql_errno()){
-			return false;
-		}else{
-			return true;
-		}
+		return $this->executeSQL($sql);
 	}
 
 	public function insert($table, $values) {
@@ -101,12 +104,7 @@ class DBLib{
 		if(!$this->checkExecute($sql)){
 			return false;
 		}
-		$result = mysql_query($sql,$this->dbLink);
-		if (mysql_errno()) {
-			return false;
-		} else {
-			return true;
-		}
+		return $this->executeSQL($sql);
 	}
 	public function delete($table,$identifier,$extra="",$escapeIdentifier=true){
 		if(empty($table) || !$this->connected){
@@ -119,12 +117,7 @@ class DBLib{
 		if(!$this->checkExecute($sql)){
 			return false;
 		}
-		$result=mysql_query($sql,$this->dbLink);
-		if(mysql_errno()){
-			return false;
-		}else{
-			return true;
-		}
+		return $this->executeSQL($sql);
 	}
 
 	public function select($table, $values, $identifier=array(), $extra="",$escapeIdentifier=true) {
@@ -142,9 +135,9 @@ class DBLib{
 		if(!$this->checkExecute($sql)){
 			return false;
 		}
-		$result = mysql_query($sql,$this->dbLink);
-		if (!mysql_errno()) {
-			while($out=mysql_fetch_assoc($result)){
+		$result = $this->dbLink->query($sql);
+		if ($this->dbLink->errno == 0) {
+			while($out=$result->fetch_assoc()){
 				$output[]=$out;
 			}
 			if(sizeof($output)==0){
@@ -152,6 +145,16 @@ class DBLib{
 			}
 			return($output);
 		} else {
+			$this->echoDev("query failed: ".$this->dbLink->error);
+			return false;
+		}
+	}
+
+	private function executeSQL($sql){
+		$this->dbLink->query($sql);
+		if ($this->dbLink->errno == 0) {
+			return true;
+		}else{
 			return false;
 		}
 	}
@@ -166,7 +169,7 @@ class DBLib{
 
 	public function dbEscape($string) {
 		if($this->connected && $this->execute){
-			return(mysql_real_escape_string($string,$this->dbLink));
+			return($this->dbLink->escape_string($string));
 		}else{
 			return $string;
 		}

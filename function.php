@@ -54,7 +54,7 @@ function validFile($filename){
 
 function logStats($datas,$type,$alt=false,$outlineAlt=0,$mode=1){
 	$output="";
-	$left=80;
+	$left=10;
 	$max=getMax($type);
 	for($num=0;$num<=$max;$num++){
 		$printValues=true;
