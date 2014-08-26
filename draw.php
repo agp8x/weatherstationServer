@@ -227,6 +227,7 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 	$svg=false;
 	if(isset($_GET['lib'])){
 		$svg=true;
+		$clima = $_GET['lib'] === "clima";
 		if(file_exists("charts/".$chartname.".svg")){
 			$file_exists=true;
 		}
@@ -241,7 +242,22 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 	#if((date("d.m.Y")==$date &&$force) || !file_exists($chartname) || $force){
 	#if(true){#always redraw
 		if($svg){
-			include('ownlib.php');	
+			if($clima && $mode == 1){
+				include('lib/climaDiagram.php');
+				$cd = new ClimaDiagram();
+				$cd->setLocation('Bischberg','Deutschland','50`, 50`', 'north');
+				$cd->setMode('day');
+				$values=prepareData($datas[1],$div,$selectionStart,$selectionEnd,$chartdistance);
+				foreach($values as $i=>$value){
+					if(!($i == 0 || $i == 25)){
+						$day_values[]=$value;
+					}
+				}
+				$cd->setTemperatureData($day_values);
+				file_put_contents("charts/".$chartname.".svg", $cd->getGraph());
+			}else{
+				include('ownlib.php');
+			}
 		}else{
 			chdir('pchart');
 			include("class/pData.class.php");
