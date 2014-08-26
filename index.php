@@ -3,6 +3,7 @@
 header("Cache-Control: no-cache, must-revalidate");
 $start=microtime(true);
 date_default_timezone_set("Europe/Berlin");
+include('config.php');
 include('lib/DBLib.php');
 include('draw.php');
 include('function.php');
@@ -86,6 +87,7 @@ if($mode==1){
 if(!$error===false){
 	$html.=$error;
 }else{
+	$db=new DBLib($database['host'],$database['user'],$database['password'],$database['database']);
 	$html.=generateChart($today,$mode,$num,$date);
 }
 $runtime=microtime(true)-$start;

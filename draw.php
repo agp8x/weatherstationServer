@@ -11,13 +11,13 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 	global $day;
 	global $month;
 	global $year;
+	global $db;
 	
 	$diffuse=0; # 10min -+ start/end time
 	
 	$types=array('ambi1','ambi2','humi1','temp1','temp2','baro1');
 	$dummy=array(array(),array());
 	
-	$db=new DBLib('localhost','temp','temppw','temp');
 	$stats="";
 	$selectionStart=$selectionEnd=0;
 	$chartname="";
