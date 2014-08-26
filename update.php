@@ -1,10 +1,11 @@
 <?php
 #v1.3
+include('config.php');
 include('lib/DBLib.php');
 include('function.php');
 $db=new DBLib();
 
-$db->connect('localhost','temp','temppw','temp');#lokal
+$db=new DBLib($database['host'],$database['user'],$database['password'],$database['database']);
 
 $dir=scandir('data');
 $temp=$humi=$ambi=$baro=0;
