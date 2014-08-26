@@ -220,7 +220,7 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 	//only redraw, if new data was added, indicated by 'newData' token left by update.php
 	$newData=false;
 	if(file_exists('newData')){
-		unlink('newData');
+		@unlink('newData');
 		$newData=true;
 	}
 	$file_exists=false;

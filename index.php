@@ -51,6 +51,8 @@ if(isset($_GET['mode']) && $_GET['mode']=='last'){
 }else if($type!='none' && ($type=="temp" || $type=="ambi" || $type=="humi" || $type=="baro")){
 	//mode: day
 	$mode=1;
+}else if (isset($_GET['mode']) && $_GET['mode']=='predict'){
+	$mode=4;
 }else{
 	$html.="Keine weiteren Angaben: Heutige Temperatur wird angezeigt";
 	$mode=1;
@@ -84,11 +86,13 @@ if($mode==1){
 		$date=array(date("Y"),date("n"),date("j"));
 	}
 }
+$db=new DBLib($database['host'],$database['user'],$database['password'],$database['database']);
 if(!$error===false){
 	$html.=$error;
-}else{
-	$db=new DBLib($database['host'],$database['user'],$database['password'],$database['database']);
+}else if($mode != 4){
 	$html.=generateChart($today,$mode,$num,$date);
+}else{
+	include('predict.php');
 }
 $runtime=microtime(true)-$start;
 $html.="<div style='position:fixed;bottom:20px;right:50px;' >Runtime: ".$runtime." s</div>";

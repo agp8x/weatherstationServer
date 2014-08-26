@@ -12,7 +12,7 @@ $temp=$humi=$ambi=$baro=0;
 foreach($dir as $file){
 	if(validFile($file)){
 		file_put_contents('newData',"");
-		#echo "parsing file: ".$file."\n";
+		echo "parsing file: ".$file."\n";
 		importLogfiletoDatabase('data/'.$file);
 		//recent records on frontpage:
 		if($file[0].$file[1].$file[2].$file[3].$file[4] == "temp2"){
@@ -27,7 +27,7 @@ foreach($dir as $file){
 		///
 		unlink('data/'.$file);
 	}else{
-		#echo "invalidFile: ".$file." \n";
+		echo "invalidFile: ".$file." \n";
 	}
 }
 $db->close();
