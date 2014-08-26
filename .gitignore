@@ -4,4 +4,5 @@ data/
 *.svg
 charts/
 config.php
+newData
 
