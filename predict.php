@@ -90,7 +90,8 @@ $month=date('n', $tupel['time']);
 $year=date('Y', $tupel['time']);
 $day=date('j', $tupel['time']);
 
-$div=getdiv('temp2');
+#$div=getdiv('temp');
+$div=1;
 for($i=1; $i<=$day;$i++){
 	$selectionStart=mktime(0,0,0,$month,$i,$year);
 	$selectionEnd=$selectionStart+(60*60*(24+date("I",$selectionStart)));
@@ -106,15 +107,19 @@ for($i=1; $i<=$day;$i++){
 #	}
 #	echo "</tr>";
 #}
+$div=getdiv('temp');
 echo "prediction for ".date("d.m.Y");
-echo "<table border='border-collapse'>";
-echo "<tr><th>hour</th> <th>prediction</th> <th>difference</th><th>actual measurement</th></tr>";
+echo "<table border='border-collapse'>\n";
+echo "<tr><th>hour</th> <th>prediction</th> <th>difference</th><th>actual measurement</th></tr>\n";
 for ($i=0;$i<25;$i++){
-	$r=wrapR(25,$i,$sumary);
+	$r=wrapR($day-1,$i,$sumary);
+	$r=$r/$div;
 	$r=round($r,2);
-	echo "<tr><td>".$i."</td><td>".$r."</td><td>".($r-$sumary[25][$i+1])."</td><td>".$sumary[25][$i+1]."</td></tr>";
+	$a=$sumary[$day-1][$i+1]/$div;
+	$a=round($a,2);
+	echo "<tr><td>".$i."</td><td>".$r."</td><td>".round($r-$a,2)."</td><td>".$a."</td></tr>\n";
 }
-echo "</table>";
+echo "</table>\n";
 
 
 #for($i=0;$i<=24;$i++){
