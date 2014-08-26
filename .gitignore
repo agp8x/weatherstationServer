@@ -3,3 +3,5 @@ data/
 *.png
 *.svg
 charts/
+config.php
+
