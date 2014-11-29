@@ -314,9 +314,13 @@ function drawChart($myData,$target,$date,$type){
 	$myPicture->Render($target);
 }
 
-function calendarDay($day,$year,$month,$selection){
+function calendarDay($day,$year,$month,$selection, $future){
 	$baselink="&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."'";
-	return tempLink($baselink,$day,($selection=="temp")).humiLink($baselink,($selection=="humi")).ambiLink($baselink,($selection=="ambi")).baroLink($baselink,($selection=="baro"));
+	if($future){
+		return $day." (H A B)";
+	}else{
+		return tempLink($baselink,$day,($selection=="temp")).humiLink($baselink,($selection=="humi")).ambiLink($baselink,($selection=="ambi")).baroLink($baselink,($selection=="baro"));
+	}
 }
 function tempLink($baselink,$day,$selected=false){
 	$link="<a href='?type=temp".$baselink;
@@ -347,6 +351,8 @@ function baroLink($baselink,$selected=false){
 	return $link." >B</a>)";
 }
 function calendarNav($month,$year){
+	global $start_year_of_recordings;
+	
 	$prevMonth=$prevYear=$nextMonth=$nextYear=0;
 	if($month==12){
 		$prevMonth=$month-1;
@@ -364,7 +370,27 @@ function calendarNav($month,$year){
 		$nextMonth=$month+1;
 		$nextYear=$year;
 	}
-	return "<div id='calendarNav'>\n\t<a href='?mode=month&amp;year=".$prevYear."&amp;month=".$prevMonth."'>&lt;&lt;</a>&nbsp; <a href='?mode=month&amp;year=".$year."&amp;month=".$month."'>".$month."</a> &nbsp; <a href='?mode=month&amp;year=".$nextYear."&amp;month=".$nextMonth."'>&gt;&gt;</a>\n</div>\n";
+	$show['prev']=$prevYear >= $start_year_of_recordings;
+	$show['next']=! isFuture(array(date("j"),date("n"),date("Y")), 0, $nextMonth, $nextYear);
+	$links="<div id='calendarNav'>\n\t";
+	if ($show['prev']){
+		$links.="<a href='?mode=month&amp;year=".$prevYear."&amp;month=".$prevMonth."'>&lt;&lt; (".monthToName($prevMonth).")</a>";
+	}else{
+		$links.=monthToName($prevMonth);
+	}
+	$links.="&nbsp; <a href='?mode=month&amp;year=".$year."&amp;month=".$month."'>".monthToName($month)."</a> &nbsp; ";
+	if ($show['next']){
+		$links.="<a href='?mode=month&amp;year=".$nextYear."&amp;month=".$nextMonth."'>&gt;&gt; (".monthToName($nextMonth).")</a>";
+	}else{
+		$links.=monthToName($nextMonth);
+	}
+	$links.="\n</div>\n";
+	return $links;
+}
+function monthToName($month){
+	$dateObj   = DateTime::createFromFormat('!m', $month);
+	$monthName = $dateObj->format('F');
+	return $monthName;
 }
 function prependZero($number){
 	return ($number<10)? "0".$number : $number;
@@ -393,7 +419,8 @@ function drawCalendar($date,$type){
 				}else{
 					$calendar.="\t\t<td>";
 				}
-				$calendar.=calendarDay($day,$year,$month,($day==$selectedDay)? $type : false);
+				$future=isFuture($today, $day, $month, $year, false);
+				$calendar.=calendarDay($day,$year,$month,($day==$selectedDay)? $type : false, $future);
 				$day++;
 			}else{
 				$calendar.="\t\t<td> &nbsp;";
@@ -405,6 +432,24 @@ function drawCalendar($date,$type){
 	$calendar.="</table>
 	Letzte: <a href='?mode=last&amp;num=24&amp;type=temp'>24h</a> <a href='?mode=last&amp;num=48&amp;type=temp'>48h</a> <a href='?mode=last&amp;num=96&amp;type=temp'>96h</a>  &nbsp;&nbsp;&nbsp;<a href='?'>Temperatur Heute</a></div>";
 	return $calendar;
+}
+function isFuture($today, $day, $month, $year, $overwriteDay=true){
+	# check year
+	if ($today[2] < $year){
+		return true;
+	}
+	if ($today[2] == $year){
+		# check month
+		if ($today[1] < $month){
+			return true;
+		}
+		if($today[1] == $month){
+			# check day
+			return $today[0] < $day && $overwriteDay;
+		}
+	}
+	# base case
+	return false;
 }
 
 function typeToSensorCount($type){

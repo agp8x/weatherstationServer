@@ -7,3 +7,5 @@ $database = array(
 	'database' => "temp",
 );
 
+$start_year_of_recordings=2012;
+
