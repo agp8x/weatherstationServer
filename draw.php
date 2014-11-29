@@ -249,7 +249,7 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 				$cd->setMode('day');
 				$values=prepareData($datas[1],$div,$selectionStart,$selectionEnd,$chartdistance);
 				foreach($values as $i=>$value){
-					if(!($i == 0 || $i == 25)){
+					if(!($i == 0 || $i == 1)){
 						$day_values[]=$value;
 					}
 				}
