@@ -419,7 +419,7 @@ function drawCalendar($date,$type){
 				}else{
 					$calendar.="\t\t<td>";
 				}
-				$future=isFuture($today, $day, $month, $year, false);
+				$future=isFuture($today, $day, $month, $year);
 				$calendar.=calendarDay($day,$year,$month,($day==$selectedDay)? $type : false, $future);
 				$day++;
 			}else{
@@ -433,7 +433,9 @@ function drawCalendar($date,$type){
 	Letzte: <a href='?mode=last&amp;num=24&amp;type=temp'>24h</a> <a href='?mode=last&amp;num=48&amp;type=temp'>48h</a> <a href='?mode=last&amp;num=96&amp;type=temp'>96h</a>  &nbsp;&nbsp;&nbsp;<a href='?'>Temperatur Heute</a></div>";
 	return $calendar;
 }
-function isFuture($today, $day, $month, $year, $overwriteDay=true){
+function isFuture($today, $day, $month, $year){
+	$dateObj   = DateTime::createFromFormat('!m', $month-1);
+	$numDays = $dateObj->format("t");
 	# check year
 	if ($today[2] < $year){
 		return true;
@@ -441,9 +443,17 @@ function isFuture($today, $day, $month, $year, $overwriteDay=true){
 	if ($today[2] == $year){
 		# check month
 		if ($today[1] < $month){
+			# last day of month => enable next month
+			if($today[0] == $numDays){
+				return $day != 0 && $day != 1;
+			}
 			return true;
 		}
 		if($today[1] == $month){
+			# enable next day anyways
+			if($today[0]+1 == $day){
+				return false;
+			}
 			# check day
 			return $today[0] < $day && $overwriteDay;
 		}
