@@ -455,7 +455,7 @@ function isFuture($today, $day, $month, $year){
 				return false;
 			}
 			# check day
-			return $today[0] < $day && $overwriteDay;
+			return $today[0] < $day;
 		}
 	}
 	# base case
