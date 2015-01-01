@@ -69,7 +69,7 @@ if($mode==1){
 			if($_GET['year']>$today[2]){
 				$future=true;
 			}else{
-				if($_GET['month']>$today[1]){
+				if($_GET['month']>$today[1] && $_GET['year']==$today[2]){
 					$future=true;
 				}else{
 					if($_GET['day']>$today[0] && $_GET['month']==$today[1]){
