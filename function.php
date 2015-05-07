@@ -30,7 +30,7 @@ function importLogfileToDatabase($fileImport){
 
 	foreach($file as $line){
 		$line=explode(";",$line);
-		
+
 		if($emptyDB){
 			$db->insert($logtype[0],array('time'=>$line[1],'value'=>$line[0]));
 		}else{
@@ -39,7 +39,7 @@ function importLogfileToDatabase($fileImport){
 			}
 		}
 	}
-	
+
 }
 function validFile($filename){
 	$humi=(strpos($filename,'humi')===false);
@@ -214,7 +214,7 @@ function getDay(){
 	global $year;
 	return array($month,$day,$year);
 }
-function getNearest($data,$time,$last=-1){ 
+function getNearest($data,$time,$last=-1){
 	if(!is_array($data)){
 		return array(0,$time);
 	}
@@ -285,9 +285,9 @@ function drawChart($myData,$target,$date,$type){
 	$width=1200;
 	$height=600;
 	$fontsize=12;
-	
+
 	$myData->setSerieDescription("Labels","Stunde");
-	$myData->setAbscissa("Labels"); 
+	$myData->setAbscissa("Labels");
 	$myPicture = new pImage($width,$height,$myData);
 	#$myPicture->Antialias = FALSE;#antialiasing off
 	$Settings = array("R"=>170, "G"=>183, "B"=>87, "Dash"=>1, "DashR"=>190, "DashG"=>203, "DashB"=>107);
@@ -297,7 +297,7 @@ function drawChart($myData,$target,$date,$type){
 	$myPicture->drawGradientArea(0,0,$width,$height,DIRECTION_VERTICAL,$Settings);
 	$myPicture->drawGradientArea(0,0,$width,20,DIRECTION_VERTICAL,array("StartR"=>0,"StartG"=>0,"StartB"=>0,"EndR"=>50,"EndG"=>50,"EndB"=>50,"Alpha"=>80));
 	$myPicture->drawRectangle(0,0,$width-1,$height-1,array("R"=>0,"G"=>0,"B"=>0));#border
-	/* Write the chart title */ 
+	/* Write the chart title */
 	$myPicture->setFontProperties(array("FontName"=>"fonts/Forgotte.ttf","FontSize"=>$fontsize,"R"=>255,"G"=>255,"B"=>255));
 	$myPicture->drawText(10,16,"Durchschnittliche ".typeToFullName($type)." @ ".$date,array("FontSize"=>11,"Align"=>TEXT_ALIGN_BOTTOMLEFT));
 	$myPicture->drawText($width-200,16,"erzeugt @ ".date("H:i:s d.m.Y"),array("FontSize"=>11,"Align"=>TEXT_ALIGN_BOTTOMLEFT));
@@ -352,7 +352,7 @@ function baroLink($baselink,$selected=false){
 }
 function calendarNav($month,$year){
 	global $start_year_of_recordings;
-	
+
 	$prevMonth=$prevYear=$nextMonth=$nextYear=0;
 	if($month==12){
 		$prevMonth=$month-1;
@@ -404,7 +404,7 @@ function drawCalendar($date,$type){
 	$today=array('match'=>($month==date("n") && $year==date("Y")),date("j"),date("n"),date("Y"));
 	$first=mktime(0,0,0,$month,1,$year);
 	$firstDay=date("w",$first);
-	
+
 	$calendar="<div id='calendar'><br/>\n".calendarNav($month,$year);
 	$day=1;
 	#$day=0;
@@ -478,4 +478,3 @@ function fileToLastSet($file){
 	$temp=explode(";",$last);
 	return $temp[0];
 }
-

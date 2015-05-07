@@ -66,6 +66,7 @@ if($mode==1){
 		}else{
 			$date=array($_GET['year'],$_GET['month'],$_GET['day']);
 			$future=false;
+			#TODO: replace logic?
 			if($_GET['year']>$today[2]){
 				$future=true;
 			}else{
@@ -98,5 +99,3 @@ $runtime=microtime(true)-$start;
 $html.="<div style='position:fixed;bottom:20px;right:50px;' >Runtime: ".$runtime." s</div>";
 $html.=$calendar."</body>";
 echo $html;
-
-
