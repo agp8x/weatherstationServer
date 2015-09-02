@@ -65,8 +65,8 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 		}
 	}else{
 		$where=array('year'=>$year,'month'=>$month);
-		$db->toggleDevmode();
-		$summary=$db->select('summary','*',$where);
+		//$db->toggleDevmode();
+		$summary=$db->select('summary','*',$where,"ORDER BY day");
 		if($summary===false){
 			$html.="No values (".$type.")";
 			return;
@@ -273,14 +273,11 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 					$selectionStart+=3600;
 				//}
 			}
-			if($mode==3){
-				//$selectionEnd-=2*60*60*24;
-			}
 			$labels=getLabels($datas[0],$selectionStart,$selectionEnd,$chartdistance);
 			if($mode==3){
 				$selectionStart+=60*60*24;
 				$selectionEnd+=60*60*24;
-				$div=1;
+				$div=0;
 			}
 			foreach($datas as $key=>$dataset){
 				#file_put_contents('data'.$type.($key+1),var_export($dataset,true));
@@ -290,7 +287,6 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 				#file_put_contents('val'.$type.($key+1),var_export($values,true));
 			}
 
-				#file_put_contents('labels',var_export($labels,true));
 			$myData->addPoints($labels,"Labels");
 			#file_put_contents('label',var_export($labels,true));
 			$myData->setAxisName(0,typeToFullName($type).getUnit($type));

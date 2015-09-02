@@ -251,7 +251,11 @@ function prepareData($data,$div,$start=0,$end=0,$chartdistance=60){
 	$values=array();
 	$rawdata=outlinedLogPoints($data,$chartdistance,$start,$end);
 	foreach($rawdata as $set){
-		$values[]=round($set[0]/$div,1);
+		if($div==0){
+			$values[]=$set[0];
+		}else{
+			$values[]=round($set[0]/$div,1);
+		}
 	}
 	return $values;
 }
