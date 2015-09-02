@@ -44,7 +44,7 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 	}elseif($mode==3){
 		$selectionStart=mktime(0,0,0,$dateInput[1],1,$dateInput[0]);
 		$days=date("t",$selectionStart);
-		$selectionEnd=$selectionStart+($days*24*60*60);
+		$selectionEnd=$selectionStart+(($days)*24*60*60);
 		$chartname="month_".$type."_".$month.".".$year;
 		$chartdistance=60*24;
 	}else{
@@ -87,7 +87,9 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 			$data_tmp=array();
 			$data_tmp1=array();
 			$data_tmp2=array();
+			#var_dump(sizeof($summary));
 			foreach($summary as $daysum){
+			#var_dump($daysum);
 				$mintmp= (str_replace($unit,'',$daysum[$name.'-min']));
 				if($min[0]>$mintmp){
 					$min[0]=$mintmp;
@@ -271,18 +273,24 @@ function generateChart($today,$mode,$hours=0,$dateInput){
 					$selectionStart+=3600;
 				//}
 			}
+			if($mode==3){
+				//$selectionEnd-=2*60*60*24;
+			}
 			$labels=getLabels($datas[0],$selectionStart,$selectionEnd,$chartdistance);
 			if($mode==3){
 				$selectionStart+=60*60*24;
+				$selectionEnd+=60*60*24;
 				$div=1;
 			}
 			foreach($datas as $key=>$dataset){
+				#file_put_contents('data'.$type.($key+1),var_export($dataset,true));
 				$values=prepareData($dataset,$div,$selectionStart,$selectionEnd,$chartdistance);
 				//TODO: replace $type.($key+1) with actual name
 				$myData->addPoints($values,$type.($key+1));
-				#file_put_contents('val1',var_export($values,true));
+				#file_put_contents('val'.$type.($key+1),var_export($values,true));
 			}
 
+				#file_put_contents('labels',var_export($labels,true));
 			$myData->addPoints($labels,"Labels");
 			#file_put_contents('label',var_export($labels,true));
 			$myData->setAxisName(0,typeToFullName($type).getUnit($type));
